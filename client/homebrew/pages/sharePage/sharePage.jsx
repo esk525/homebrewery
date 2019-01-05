@@ -1,4 +1,5 @@
 const React = require('react');
+const createClass = require('create-react-class');
 const _ = require('lodash');
 const cx = require('classnames');
 
@@ -13,24 +14,24 @@ const Account = require('../../navbar/account.navitem.jsx');
 const BrewRenderer = require('../../brewRenderer/brewRenderer.jsx');
 
 
-const SharePage = React.createClass({
-	getDefaultProps: function() {
+const SharePage = createClass({
+	getDefaultProps : function() {
 		return {
 			brew : {
-				title : '',
-				text : '',
-				shareId : null,
+				title     : '',
+				text      : '',
+				shareId   : null,
 				createdAt : null,
 				updatedAt : null,
-				views : 0
+				views     : 0
 			}
 		};
 	},
 
-	componentDidMount: function() {
+	componentDidMount : function() {
 		document.addEventListener('keydown', this.handleControlKeys);
 	},
-	componentWillUnmount: function() {
+	componentWillUnmount : function() {
 		document.removeEventListener('keydown', this.handleControlKeys);
 	},
 	handleControlKeys : function(e){
@@ -54,7 +55,7 @@ const SharePage = React.createClass({
 					<ReportIssue />
 					{/*<RecentlyViewed brew={this.props.brew} />*/}
 					<PrintLink shareId={this.props.brew.shareId} />
-					<Nav.item href={'/source/' + this.props.brew.shareId} color='teal' icon='fa-code'>
+					<Nav.item href={`/source/${this.props.brew.shareId}`} color='teal' icon='fa-code'>
 						source
 					</Nav.item>
 					<Account />
@@ -64,7 +65,7 @@ const SharePage = React.createClass({
 			<div className='content'>
 				<BrewRenderer text={this.props.brew.text} />
 			</div>
-		</div>
+		</div>;
 	}
 });
 

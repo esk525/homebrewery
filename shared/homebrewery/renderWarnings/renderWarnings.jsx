@@ -1,19 +1,22 @@
 
 const React = require('react');
+const createClass = require('create-react-class');
 const _     = require('lodash');
 const cx    = require('classnames');
 
-const RenderWarnings = React.createClass({
-	getInitialState: function() {
+const DISMISS_KEY = 'dismiss_render_warning';
+
+const RenderWarnings = createClass({
+	getInitialState : function() {
 		return {
-			warnings: {}
+			warnings : {}
 		};
 	},
-	componentDidMount: function() {
+	componentDidMount : function() {
 		this.checkWarnings();
 		window.addEventListener('resize', this.checkWarnings);
 	},
-	componentWillUnmount: function() {
+	componentWillUnmount : function() {
 		window.removeEventListener('resize', this.checkWarnings);
 	},
 	warnings : {
@@ -29,34 +32,33 @@ const RenderWarnings = React.createClass({
 				</li>;
 			}
 		},
-		zoom : function(){
-			return false;
-			if(window.devicePixelRatio !== 1){
-				return <li key='zoom'>
-					<em>Your browser is zoomed. </em> <br />
-					This can cause content to jump columns.
-				</li>;
-			}
-		}
 	},
 	checkWarnings : function(){
+		const hideDismiss = localStorage.getItem(DISMISS_KEY);
+		if(hideDismiss) return this.setState({ warnings: {} });
+
 		this.setState({
-			warnings : _.reduce(this.warnings, (r, fn, type) => {
+			warnings : _.reduce(this.warnings, (r, fn, type)=>{
 				const element = fn();
 				if(element) r[type] = element;
 				return r;
 			}, {})
-		})
+		});
 	},
-	render: function(){
+	dismiss : function(){
+		localStorage.setItem(DISMISS_KEY, true);
+		this.checkWarnings();
+	},
+	render : function(){
 		if(_.isEmpty(this.state.warnings)) return null;
 
 		return <div className='renderWarnings'>
-			<i className='fa fa-exclamation-triangle' />
+			<i className='fa fa-times dismiss' onClick={this.dismiss}/>
+			<i className='fa fa-exclamation-triangle ohno' />
 			<h3>Render Warnings</h3>
 			<small>If this homebrew is rendering badly if might be because of the following:</small>
 			<ul>{_.values(this.state.warnings)}</ul>
-		</div>
+		</div>;
 	}
 });
 
